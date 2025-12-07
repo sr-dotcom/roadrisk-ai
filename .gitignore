@@ -1,0 +1,62 @@
+# ABIA Traffic Accident Forecaster - .gitignore
+
+# =============================================================================
+# DATA FILES
+# =============================================================================
+# Ignore all data files - these should be downloaded/generated locally
+data/
+
+# NOTE: models/ is NOT ignored - required for Streamlit Cloud deployment!
+
+# Backup: also ignore any stray data files in root
+*.csv
+*.parquet
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+*.egg
+
+# =============================================================================
+# JUPYTER NOTEBOOKS
+# =============================================================================
+.ipynb_checkpoints/
+
+# =============================================================================
+# IDE / EDITOR
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# OS FILES
+# =============================================================================
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# PROJECT SPECIFIC
+# =============================================================================
+# Temporary files created during development
+_notebook_cells.txt
+
+# Old project structure (can be removed after migration verified)
+# abia/
