@@ -4,9 +4,7 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-FF4B4B.svg)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2+-orange.svg)](https://scikit-learn.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-FF4B4B.svg)](https://streamlit.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2+-orange.svg)](https://scikit-learn.org/)
+[![Live Demo](https://img.shields.io/badge/Demo-Live-success.svg)](https://roadrisk-ai.streamlit.app)
 
 > **Real-time traffic accident risk prediction powered by Machine Learning and live weather data.**
 
@@ -22,37 +20,41 @@ This application predicts the **probability of traffic accidents** based on:
 |--------|-------------|
 | 📍 **Location** | Address and state (DC, PA, FL, NC, NY, CA) |
 | 🌤️ **Weather** | Live data from Open-Meteo API (temperature, precipitation, wind) |
-| 🕐 **Time** | Current or manually selected time of day |
+| 🕐 **Time** | Location-aware current time with manual override |
 | 🚗 **Vehicle** | Vehicle type and driver information |
 
 The model was trained on **traffic violation data** and uses a **Random Forest Classifier** to predict accident risk.
 
 ---
 
-## 🖥️ Screenshots
+## ✨ Key Features
 
-| Main Interface | Risk Prediction |
-|----------------|-----------------|
-| *Address search with auto-suggest* | *Visual risk gauge with weather info* |
+- 🔍 **Smart Address Search** - Powered by Photon/Nominatim geocoding
+- 🌍 **Location-Aware Time** - Automatically detects timezone for selected location
+- 🌡️ **Live Weather** - Real-time weather conditions from Open-Meteo API
+- 📊 **Visual Risk Gauge** - Color-coded risk levels (Low/Moderate/High)
+- 💬 **Risk Interpretation** - Contextual safety recommendations
+- 🗺️ **Interactive Map** - Shows selected location
 
 ---
 
 ## 🛠️ Technologies Used
 
-- **Frontend**: [Streamlit](https://streamlit.io/) - Modern Python web framework
-- **ML Model**: [scikit-learn](https://scikit-learn.org/) - Random Forest Classifier
-- **Geocoding**: [Nominatim/OpenStreetMap](https://nominatim.org/) - Address lookup
-- **Weather API**: [Open-Meteo](https://open-meteo.com/) - Free weather data
-- **Data Processing**: Pandas, NumPy
+| Category | Technology |
+|----------|------------|
+| **Frontend** | [Streamlit](https://streamlit.io/) |
+| **ML Model** | [scikit-learn](https://scikit-learn.org/) (Random Forest) |
+| **Geocoding** | [Photon](https://photon.komoot.io/) + [Nominatim](https://nominatim.org/) |
+| **Weather API** | [Open-Meteo](https://open-meteo.com/) |
+| **Timezone** | [TimezoneFinder](https://github.com/jannikmi/timezonefinder) + [pytz](https://pythonhosted.org/pytz/) |
+| **Data Processing** | Pandas, NumPy |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-ABIA_PROJECT/
-├── data/
-│   └── processed/           # Cleaned, transformed data
+roadrisk-ai/
 ├── models/                  # Trained model artifacts (.pkl)
 ├── notebooks/               # Jupyter notebooks for exploration
 ├── src/                     # Reusable Python modules
@@ -65,7 +67,7 @@ ABIA_PROJECT/
 ├── .streamlit/              # Streamlit Cloud config
 ├── run.py                   # App launcher script
 ├── requirements.txt         # Python dependencies
-├── DEMO_SCENARIOS.md        # Test scenarios for presentation
+├── DEMO_SCENARIOS.md        # Demo test cases
 └── README.md
 ```
 
@@ -119,18 +121,18 @@ ABIA_PROJECT/
 | **Output** | Accident probability (0-100%) |
 
 ### Risk Levels
-- 🟢 **Low Risk** (0-25%): Favorable conditions
-- 🟡 **Moderate Risk** (25-50%): Exercise caution
-- 🔴 **High Risk** (50%+): Consider delaying travel
+- 🟢 **Low Risk** (0-25%): Favorable conditions - standard caution advised
+- 🟡 **Moderate Risk** (25-50%): Extra caution recommended
+- 🔴 **High Risk** (50%+): Consider delaying travel or use extreme caution
 
 ---
 
 ## 🌐 Deployment
 
-### Streamlit Cloud
-This app is deployed on [Streamlit Community Cloud](https://streamlit.io/cloud).
+### Live Demo
+**[https://roadrisk-ai.streamlit.app](https://roadrisk-ai.streamlit.app)**
 
-To deploy your own:
+### Deploy Your Own
 1. Fork this repository
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Connect your GitHub account
@@ -159,5 +161,6 @@ University of North Carolina at Charlotte
 ## 🙏 Acknowledgments
 
 - [Open-Meteo](https://open-meteo.com/) for free weather API
-- [OpenStreetMap/Nominatim](https://nominatim.org/) for geocoding services
+- [Photon/Komoot](https://photon.komoot.io/) for geocoding services
+- [OpenStreetMap/Nominatim](https://nominatim.org/) for fallback geocoding
 - [Streamlit](https://streamlit.io/) for the amazing web framework
