@@ -438,20 +438,24 @@ def get_address_suggestions(address: str, state: str) -> list:
     if not address or len(address) < 3:
         return []
     try:
-        geolocator = Nominatim(user_agent="abia_accident_forecaster_v2")
+        # Use a unique user agent with contact info to comply with Nominatim policy
+        geolocator = Nominatim(
+            user_agent="RoadRiskAI/1.0 (roadrisk-ai.streamlit.app; github.com/sr-dotcom/roadrisk-ai)",
+            timeout=15
+        )
         locations = geolocator.geocode(
             f"{address}, {state}, USA",
             exactly_one=False,
-            limit=5,
-            timeout=10
+            limit=5
         )
         if locations:
             return [(loc.address, loc.latitude, loc.longitude) for loc in locations]
         return []
     except GeocoderUnavailable:
-        return []
-    except Exception:
-        return []
+        return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
+    except Exception as e:
+        return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
+
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -562,18 +566,23 @@ def main():
                 st.session_state.suggestions = get_address_suggestions(address_input, state_input)
             st.session_state.last_search = address_input
         
-        # Display suggestions
+        # Display suggestions or error
         if st.session_state.suggestions:
-            st.markdown("**Select an address:**")
-            for i, (address, lat, lon) in enumerate(st.session_state.suggestions):
-                # Truncate long addresses for display
-                display_addr = address[:80] + "..." if len(address) > 80 else address
-                if st.button(f"📍 {display_addr}", key=f"addr_{i}", use_container_width=True):
-                    st.session_state.selected_address = address
-                    st.session_state.lat = lat
-                    st.session_state.lon = lon
-                    st.session_state.prediction_made = False
-                    st.rerun()
+            # Check for geocoder error
+            if len(st.session_state.suggestions) == 1 and st.session_state.suggestions[0][0] == "GEOCODER_ERROR":
+                st.warning("⚠️ Address search service is temporarily unavailable. Please try again in a few seconds.")
+                st.session_state.suggestions = []  # Clear error state
+            else:
+                st.markdown("**Select an address:**")
+                for i, (address, lat, lon) in enumerate(st.session_state.suggestions):
+                    # Truncate long addresses for display
+                    display_addr = address[:80] + "..." if len(address) > 80 else address
+                    if st.button(f"📍 {display_addr}", key=f"addr_{i}", use_container_width=True):
+                        st.session_state.selected_address = address
+                        st.session_state.lat = lat
+                        st.session_state.lon = lon
+                        st.session_state.prediction_made = False
+                        st.rerun()
         
         # Show selected location
         if st.session_state.selected_address:
