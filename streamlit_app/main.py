@@ -829,12 +829,12 @@ def main():
             
             # Contributing factors
             st.markdown("""
-                <div style="margin-top: 16px; padding: 12px; background: rgba(30, 41, 59, 0.5); 
-                border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
-                    <div style="font-size: 0.9rem; font-weight: 500; color: #e2e8f0; margin-bottom: 8px;">
+                <div style="margin-top: 16px; padding: 14px; background: #f8fafc; 
+                border-radius: 10px; border: 2px solid #e2e8f0;">
+                    <div style="font-size: 0.95rem; font-weight: 600; color: #1e293b; margin-bottom: 10px;">
                         📋 Factors Analyzed
                     </div>
-                    <div style="font-size: 0.85rem; color: #94a3b8; line-height: 1.6;">
+                    <div style="font-size: 0.9rem; color: #475569; line-height: 1.7;">
                         • Location & State<br>
                         • Current Weather Conditions<br>
                         • Time of Day<br>
