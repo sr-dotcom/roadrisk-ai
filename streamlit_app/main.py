@@ -20,6 +20,8 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderUnavailable
 import nest_asyncio
 import time
+import pytz
+from timezonefinder import TimezoneFinder
 
 # --- Local Imports from src ---
 from src.config import STATE_LIST, VEHICLE_MAP, GENDER_MAP, WEATHER_CODE_MAP
@@ -438,6 +440,9 @@ def get_address_suggestions(address: str, state: str) -> list:
     if not address or len(address) < 3:
         return []
     try:
+        # Add delay to respect Nominatim rate limits (max 1 request per second)
+        time.sleep(1.5)
+        
         # Use a unique user agent with contact info to comply with Nominatim policy
         geolocator = Nominatim(
             user_agent="RoadRiskAI/1.0 (roadrisk-ai.streamlit.app; github.com/sr-dotcom/roadrisk-ai)",
@@ -455,6 +460,7 @@ def get_address_suggestions(address: str, state: str) -> list:
         return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
     except Exception as e:
         return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
+
 
 
 
@@ -629,7 +635,21 @@ def main():
         use_current_time = st.toggle("Use current time", value=True, key='use_current_time')
         
         if use_current_time:
-            now = datetime.now()
+            # Get timezone based on selected location, or default to EST
+            try:
+                if st.session_state.lat and st.session_state.lon:
+                    tf = TimezoneFinder()
+                    tz_name = tf.timezone_at(lat=st.session_state.lat, lng=st.session_state.lon)
+                    if tz_name:
+                        local_tz = pytz.timezone(tz_name)
+                    else:
+                        local_tz = pytz.timezone('America/New_York')  # Default to EST
+                else:
+                    local_tz = pytz.timezone('America/New_York')  # Default to EST
+            except:
+                local_tz = pytz.timezone('America/New_York')  # Fallback to EST
+            
+            now = datetime.now(local_tz)
             current_hour = now.hour
             current_part = get_part_of_day(current_hour)
             st.markdown(f"""

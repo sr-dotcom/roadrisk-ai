@@ -30,3 +30,7 @@ nest-asyncio>=1.5.0
 
 # Parquet file support
 pyarrow>=10.0.0
+
+# Timezone support for location-based time
+timezonefinder>=6.2.0
+pytz>=2023.3
