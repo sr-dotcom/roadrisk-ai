@@ -436,16 +436,29 @@ def load_model():
 # --- Helper Functions ---
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_address_suggestions(address: str, state: str) -> list:
-    """Get address suggestions with caching."""
+    """Get address suggestions using Photon geocoder with Nominatim fallback."""
     if not address or len(address) < 3:
         return []
+    
+    # Try Photon geocoder first (Komoot, better rate limits)
     try:
-        # Add delay to respect Nominatim rate limits (max 1 request per second)
+        from geopy.geocoders import Photon
+        geolocator = Photon(user_agent="RoadRiskAI/1.0", timeout=10)
+        locations = geolocator.geocode(
+            f"{address}, {state}, USA",
+            exactly_one=False,
+            limit=5
+        )
+        if locations:
+            return [(loc.address, loc.latitude, loc.longitude) for loc in locations]
+    except Exception:
+        pass  # Try Nominatim fallback
+    
+    # Fallback to Nominatim with delay
+    try:
         time.sleep(1.5)
-        
-        # Use a unique user agent with contact info to comply with Nominatim policy
         geolocator = Nominatim(
-            user_agent="RoadRiskAI/1.0 (roadrisk-ai.streamlit.app; github.com/sr-dotcom/roadrisk-ai)",
+            user_agent="RoadRiskAI/1.0 (roadrisk-ai.streamlit.app)",
             timeout=15
         )
         locations = geolocator.geocode(
@@ -457,10 +470,9 @@ def get_address_suggestions(address: str, state: str) -> list:
             return [(loc.address, loc.latitude, loc.longitude) for loc in locations]
         return []
     except GeocoderUnavailable:
-        return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
-    except Exception as e:
-        return [("GEOCODER_ERROR", 0, 0)]  # Signal to show error message
-
+        return [("GEOCODER_ERROR", 0, 0)]
+    except Exception:
+        return [("GEOCODER_ERROR", 0, 0)]
 
 
 
