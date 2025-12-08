@@ -487,7 +487,14 @@ def get_live_weather(lat: float, lon: float) -> dict:
         )
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        data = response.json()['current']
+        json_data = response.json()
+        
+        # Check for 'current' key in response
+        if 'current' not in json_data:
+            st.error(f"API response missing 'current' key. Response keys: {list(json_data.keys())}")
+            return None
+            
+        data = json_data['current']
         return {
             'temperature_f': data['temperature_2m'],
             'temperature_c': round((data['temperature_2m'] - 32) * 5/9, 1),
@@ -496,7 +503,17 @@ def get_live_weather(lat: float, lon: float) -> dict:
             'weathercode': data['weather_code'],
             'windspeed': data['wind_speed_10m']
         }
-    except Exception:
+    except requests.exceptions.Timeout:
+        st.warning("⏱️ Weather API request timed out. Please try again.")
+        return None
+    except requests.exceptions.RequestException as e:
+        st.warning(f"🌐 Network error fetching weather: {type(e).__name__}")
+        return None
+    except KeyError as e:
+        st.warning(f"⚠️ Weather data format error - missing key: {e}")
+        return None
+    except Exception as e:
+        st.warning(f"❌ Unexpected error fetching weather: {type(e).__name__}: {e}")
         return None
 
 
